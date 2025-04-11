@@ -50,7 +50,7 @@ A web-based tool for calculating patient severity and mortality risk based on vi
 Start the development server:
    ```bash
    python app.py
-   python3 -m http.server 8000
+   python -m http.server 8000
    ```
 
 Access the application at:
