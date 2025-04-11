@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re-entrenamiento | MedPredict Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .training-card {
+            border-left: 4px solid #2e7d32;
+            transition: all 0.3s ease;
+        }
+        .training-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+        }
+        .progress-training {
+            height: 25px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-hospital-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-hospital-red">
+        <div class="container">
+            <a class="navbar-brand" href="predict.html">
+                <i class="bi bi-heart-pulse me-2"></i>
+                <span class="fw-bold">MedPredict</span> Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="predict.html"><i class="bi bi-speedometer2 me-1"></i> Evaluación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="history.html"><i class="bi bi-graph-up me-1"></i> Histórico</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-calculator-fill me-1"></i> Predictores
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="severidad.html">
+                                <i class="bi bi-clipboard2-pulse me-1"></i> Score de Severidad
+                            </a></li>
+                            <li><a class="dropdown-item" href="mortalidad.html">
+                                <i class="bi bi-activity me-1"></i> Riesgo de Mortalidad
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="custom.html">
+                                <i class="bi bi-sliders me-1"></i> Predictor Personalizado
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-cpu-fill me-1"></i> Modelos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="model.html">
+                                <i class="bi bi-speedometer2 me-1"></i> Rendimiento
+                            </a></li>
+                            <li><a class="dropdown-item" href="retraining.html">
+                                <i class="bi bi-arrow-repeat me-1"></i> Re-entrenamiento
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="bi bi-power me-1"></i> Cerrar Sesion</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="row mb-4">
+            <div class="col">
+                <h2><i class="bi bi-arrow-repeat me-2"></i> Re-entrenamiento del Modelo</h2>
+                <p class="text-muted">Actualización con nuevos datos clínicos</p>
+            </div>
+        </div>
+
+        <!-- Proceso de Re-entrenamiento -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-hospital-red text-white">
+                        <h5 class="mb-0"><i class="bi bi-cpu me-2"></i> Configuración</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="retrainingForm">
+                            <div class="mb-4">
+                                <h6 class="text-hospital-red mb-3"><i class="bi bi-database me-1"></i> Fuente de Datos</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Conjunto de Datos</label>
+                                        <select class="form-select" id="datasetSelect">
+                                            <option value="full">Todos los pacientes (2020-actual)</option>
+                                            <option value="recent">Últimos 6 meses</option>
+                                            <option value="icu">Solo UCI</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Fecha Límite</label>
+                                        <input type="date" class="form-control" id="dateLimit" value="2023-07-01">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h6 class="text-hospital-red mb-3"><i class="bi bi-sliders me-1"></i> Parámetros del Modelo</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Algoritmo</label>
+                                        <select class="form-select" id="algorithmSelect">
+                                            <option value="xgb">XGBoost</option>
+                                            <option value="rf">Random Forest</option>
+                                            <option value="nn">Red Neuronal</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Validación</label>
+                                        <select class="form-select" id="validationSelect">
+                                            <option value="kfold">5-Fold Cross Validation</option>
+                                            <option value="holdout">Holdout 80/20</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h6 class="text-hospital-red mb-3"><i class="bi bi-funnel me-1"></i> Variables a Incluir</h6>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="includeDemographics" checked>
+                                    <label class="form-check-label" for="includeDemographics">Datos Demográficos</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="includeVitals" checked>
+                                    <label class="form-check-label" for="includeVitals">Signos Vitales</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="includeLabs" checked>
+                                    <label class="form-check-label" for="includeLabs">Laboratorios</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="includeComorbidities">
+                                    <label class="form-check-label" for="includeComorbidities">Comorbilidades</label>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-hospital-red" id="startTraining">
+                                    <i class="bi bi-play-circle me-1"></i> Iniciar Re-entrenamiento
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Progreso y Resultados -->
+                <div class="card shadow-sm d-none" id="trainingProgressCard">
+                    <div class="card-header bg-hospital-red text-white">
+                        <h5 class="mb-0"><i class="bi bi-hourglass-split me-2"></i> Progreso</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h6 id="trainingStatus">Preparando datos...</h6>
+                            <div class="progress progress-training mt-2">
+                                <div id="trainingProgress" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                    role="progressbar" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info" id="trainingLog">
+                            <pre class="mb-0 small" id="logContent">Inicializando proceso...</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparación de Modelos -->
+                <div class="card shadow-sm d-none" id="resultsCard">
+                    <div class="card-header bg-hospital-red text-white">
+                        <h5 class="mb-0"><i class="bi bi-clipboard2-data me-2"></i> Resultados</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th>Métrica</th>
+                                        <th>Modelo Anterior</th>
+                                        <th>Nuevo Modelo</th>
+                                        <th>Mejora</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>AUC-ROC</td>
+                                        <td>0.91</td>
+                                        <td class="fw-bold">0.93</td>
+                                        <td class="text-success">+2.2%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sensibilidad</td>
+                                        <td>0.86</td>
+                                        <td class="fw-bold">0.89</td>
+                                        <td class="text-success">+3.5%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Especificidad</td>
+                                        <td>0.83</td>
+                                        <td>0.82</td>
+                                        <td class="text-danger">-1.2%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="alert alert-warning mt-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            El nuevo modelo muestra mejoras en 2 de 3 métricas clave. ¿Desea implementarlo?
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-outline-danger" id="rejectModel">
+                                <i class="bi bi-x-circle me-1"></i> Descartar
+                            </button>
+                            <button class="btn btn-hospital-red" id="deployModel">
+                                <i class="bi bi-cloud-arrow-up me-1"></i> Implementar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('retrainingForm');
+            const progressCard = document.getElementById('trainingProgressCard');
+            const resultsCard = document.getElementById('resultsCard');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                startTrainingProcess();
+            });
+            
+            function startTrainingProcess() {
+                // Mostrar tarjeta de progreso
+                progressCard.classList.remove('d-none');
+                form.classList.add('d-none');
+                
+                // Simular proceso de entrenamiento
+                simulateTraining();
+            }
+            
+            function simulateTraining() {
+                const progressBar = document.getElementById('trainingProgress');
+                const statusText = document.getElementById('trainingStatus');
+                const logContent = document.getElementById('logContent');
+                
+                const steps = [
+                    { percent: 10, message: "Preparando datos...", log: "Cargando dataset de 12,458 pacientes" },
+                    { percent: 25, message: "Limpieza de datos...", log: "Tratamiento de valores faltantes completado" },
+                    { percent: 40, message: "Extracción de características...", log: "126 características identificadas" },
+                    { percent: 60, message: "Entrenando modelo...", log: "Iteración 150/200 - Loss: 0.1423" },
+                    { percent: 80, message: "Validando modelo...", log: "Validación cruzada en progreso (fold 3/5)" },
+                    { percent: 95, message: "Generando reportes...", log: "Comparación con modelo anterior completada" },
+                    { percent: 100, message: "¡Completado!", log: "Proceso finalizado con éxito" }
+                ];
+                
+                let currentStep = 0;
+                
+                const interval = setInterval(() => {
+                    if (currentStep < steps.length) {
+                        const step = steps[currentStep];
+                        progressBar.style.width = `${step.percent}%`;
+                        progressBar.textContent = `${step.percent}%`;
+                        statusText.textContent = step.message;
+                        logContent.textContent += `\n[${new Date().toLocaleTimeString()}] ${step.log}`;
+                        logContent.scrollTop = logContent.scrollHeight;
+                        currentStep++;
+                    } else {
+                        clearInterval(interval);
+                        showResults();
+                    }
+                }, 1500);
+            }
+            
+            function showResults() {
+                progressCard.classList.add('d-none');
+                resultsCard.classList.remove('d-none');
+                
+                // Configurar botones
+                document.getElementById('rejectModel').addEventListener('click', function() {
+                    alert("Modelo descartado. Se mantiene la versión anterior.");
+                    form.classList.remove('d-none');
+                    resultsCard.classList.add('d-none');
+                    document.getElementById('trainingProgress').style.width = "0%";
+                });
+                
+                document.getElementById('deployModel').addEventListener('click', function() {
+                    alert("¡Nuevo modelo implementado con éxito!");
+                    form.classList.remove('d-none');
+                    resultsCard.classList.add('d-none');
+                    document.getElementById('trainingProgress').style.width = "0%";
+                });
+            }
+        });
+    </script>
+</body>
+</html>

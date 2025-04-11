@@ -267,3 +267,91 @@ footer {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
+
+/* Añadir al archivo CSS existente */
+
+/* Fondo claro para el login */
+.bg-hospital-light {
+    background-color: #f8fcf8;
+}
+
+/* Estilo especial para la tarjeta de login */
+.login-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    margin-bottom: 2rem;
+}
+
+.login-card .card-header {
+    border-radius: 0 !important;
+}
+
+/* Efecto hover para los enlaces */
+a.text-hospital-red:hover {
+    color: #1b5e20 !important;
+    text-decoration: underline;
+}
+
+/* Animación para la tarjeta */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Estilo para el botón de mostrar contraseña */
+#togglePassword {
+    border-color: #ced4da;
+}
+
+#togglePassword:hover {
+    background-color: #f1f8e9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .login-card {
+        margin-top: 1rem;
+    }
+    
+    .hospital-logo i {
+        font-size: 2.5rem !important;
+    }
+}
+
+/* Estilos para tarjetas de predictores */
+.predictor-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid #2e7d32;
+}
+
+.predictor-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+}
+
+/* Barras de progreso para resultados */
+.progress-risk {
+    height: 25px;
+    border-radius: 4px;
+}
+
+.progress-risk .progress-bar {
+    font-weight: 600;
+}
+
+/* Tooltips para parámetros */
+.param-tooltip {
+    cursor: help;
+    border-bottom: 1px dotted #2e7d32;
+}

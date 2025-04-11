@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluacion - MedPredict Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon-new.png" type="image/png">
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-hospital-red">
+        <div class="container">
+            <a class="navbar-brand" href="predict.html">
+                <i class="bi bi-heart-pulse me-2"></i>
+                <span class="fw-bold">MedPredict</span> Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="predict.html"><i class="bi bi-speedometer2 me-1"></i> Evaluación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="history.html"><i class="bi bi-graph-up me-1"></i> Histórico</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-calculator-fill me-1"></i> Predictores
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="severidad.html">
+                                <i class="bi bi-clipboard2-pulse me-1"></i> Score de Severidad
+                            </a></li>
+                            <li><a class="dropdown-item" href="mortalidad.html">
+                                <i class="bi bi-activity me-1"></i> Riesgo de Mortalidad
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="custom.html">
+                                <i class="bi bi-sliders me-1"></i> Predictor Personalizado
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-cpu-fill me-1"></i> Modelos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="model.html">
+                                <i class="bi bi-speedometer2 me-1"></i> Rendimiento
+                            </a></li>
+                            <li><a class="dropdown-item" href="retraining.html">
+                                <i class="bi bi-arrow-repeat me-1"></i> Re-entrenamiento
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="bi bi-power me-1"></i> Cerrar Sesion</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-content mt-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-hospital-red text-white">
+                        <h5 class="mb-0"><i class="bi bi-clipboard2-pulse me-2"></i>Formulario de Evaluación</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="predictionForm" class="needs-validation" novalidate>
+                            <div class="row g-3">
+                                <!-- Campos para Nombre y Apellido -->
+                                <div class="col-md-6">
+                                    <label for="first_name" class="form-label"><i class="bi bi-person-vcard me-2"></i>Nombre(s)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" class="form-control" id="first_name" required>
+                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese el nombre del paciente</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="last_name" class="form-label"><i class="bi bi-person-vcard me-2"></i>Apellido(s)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" class="form-control" id="last_name" required>
+                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese el apellido del paciente</div>
+                                </div>
+
+                                <!-- Campo para RUT -->
+                                <div class="col-md-6">
+                                    <label for="rut" class="form-label"><i class="bi bi-card-text me-2"></i>RUT</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
+                                        <input type="text" class="form-control" id="rut" required>
+                                    </div>
+                                    <div class="form-text">Formato: 12345678-9</div>
+                                    <div class="invalid-feedback">Por favor ingrese el RUT del paciente</div>
+                                </div>
+
+                                <!-- Campo para fecha actual (solo lectura) -->
+                                <div class="col-md-6">
+                                    <label for="current_date" class="form-label"><i class="bi bi-calendar-date me-2"></i>Fecha de Evaluación</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                        <input type="text" class="form-control" id="current_date" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- Radio buttons para Sexo -->
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-gender-ambiguous me-2"></i>Sexo</label>
+                                    <div class="d-flex">
+                                        <div class="form-check me-3">
+                                            <input class="form-check-input" type="radio" name="gender" id="male" value="masculino" required>
+                                            <label class="form-check-label" for="male">
+                                                <i class="bi bi-gender-male me-1"></i>Masculino
+                                            </label>
+                                        </div>
+                                        <div class="form-check me-3">
+                                            <input class="form-check-input" type="radio" name="gender" id="female" value="femenino">
+                                            <label class="form-check-label" for="female">
+                                                <i class="bi bi-gender-female me-1"></i>Femenino
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Por favor seleccione el sexo del paciente</div>
+                                </div>
+
+                                <!-- Campo para Profesional (solo lectura) -->
+                                <div class="col-md-6">
+                                    <label for="professional" class="form-label"><i class="bi bi-person-badge me-2"></i>Profesional</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person-hearts"></i></span>
+                                        <input type="text" class="form-control" id="professional" value="Dra. Valentina Ríos M." readonly>
+                                    </div>
+                                </div>
+
+                                <!-- Resto del formulario -->
+                                <div class="col-md-6">
+                                    <label for="age" class="form-label"><i class="bi bi-calendar-heart me-2"></i>Edad del Paciente</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                                        <input type="number" class="form-control" id="age" required min="0" max="100">
+                                        <span class="input-group-text">años</span>
+                                    </div>
+                                    <div class="form-text">Rango: 0-100 años</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="blood_pressure" class="form-label"><i class="bi bi-heart-pulse me-2"></i>Presión Arterial</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-speedometer2"></i></span>
+                                        <input type="number" class="form-control" id="blood_pressure" required min="70"
+                                            max="190">
+                                        <span class="input-group-text">mmHg</span>
+                                    </div>
+                                    <div class="form-text">Rango: 70-190 mmHg</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="heart_rate" class="form-label"><i class="bi bi-heart me-2"></i>Frecuencia Cardíaca</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-heart-pulse"></i></span>
+                                        <input type="number" class="form-control" id="heart_rate" required min="40"
+                                            max="130">
+                                        <span class="input-group-text">lpm</span>
+                                    </div>
+                                    <div class="form-text">Rango: 40-130 lpm</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="oxygen_level" class="form-label"><i class="bi bi-lungs me-2"></i>Sat. Oxígeno</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-droplet"></i></span>
+                                        <input type="number" class="form-control" id="oxygen_level" required min="70"
+                                            max="100">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="form-text">Rango: 70-100%</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="chronic_conditions" class="form-label"><i class="bi bi-clipboard2-pulse me-2"></i>Condiciones Crónicas</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text"><i class="bi bi-clipboard2-check"></i></span>
+                                        <select class="form-select" id="chronic_conditions" required>
+                                            <option value="" selected disabled>Seleccione una opción</option>
+                                            <option value="0">Ninguna</option>
+                                            <option value="1">1 Condición</option>
+                                            <option value="2">2 Condiciones</option>
+                                            <option value="3">3 Condiciones</option>
+                                            <option value="4">4 Condiciones</option>
+                                            <option value="5">5 o más condiciones</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-text">Nota: Incluye antecedentes previos y otras comorvilidades</div>
+                                    <div class="invalid-feedback">Por favor seleccione una opción</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="medical_observations" class="form-label">
+                                        <i class="bi bi-journal-text me-2"></i>Observaciones Médicas
+                                    </label>
+                                    <textarea class="form-control" id="medical_observations" rows="3"></textarea>
+                                    <div class="form-text">Nota: Informacion adicional sobre la condición del paciente</div>
+                                </div>
+
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-hospital-red w-100 py-3">
+                                        <i class="bi bi-calculator me-2"></i>Calcular Riesgo
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-hospital-red text-white">
+                        <h5 class="mb-0"><i class="bi bi-clipboard2-data me-2"></i>Resultados de la Evaluación</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="loadingIndicator" class="text-center py-5 d-none">
+                            <div class="spinner-border text-hospital-red" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-3">Analizando datos del paciente...</p>
+                        </div>
+
+                        <div id="results" class="text-center">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                Complete el formulario para obtener la evaluación de riesgo
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="bi bi-heartbreak me-2"></i>Probabilidad de Mortalidad
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="mortalityChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="bi bi-activity me-2"></i>Nivel de Severidad</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="severityChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4 last-section">
+                            <div class="col-lg-8 mx-auto">
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="bi bi-bar-chart-line me-2"></i>Factores de Riesgo
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="riskFactors"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><br>
+                        <div class="form-text" style="text-align: center;">Nota: Esto es una simulación artificial y no reemplaza el diagnóstico médico profesional.</div>
+                        <div class="col-12 mt-4">
+                            <button type="button" id="publishEvaluation" class="btn btn-hospital-red w-100 py-3">
+                                <i class="bi bi-upload me-2"></i>Generar PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-hospital-red text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h5 class="d-flex align-items-center">
+                        <i class="bi bi-heart-pulse me-2"></i>
+                        <span>MedPredict Pro</span>
+                    </h5>
+                    <p class="text-light opacity-75 mb-0">Sistema de apoyo clínico para evaluación de riesgo de
+                        mortalidad y severidad.</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">Enlaces</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="documentacion.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-file-earmark-text me-2"></i>Documentación
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="privacidad.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-shield-lock me-2"></i>Privacidad
+                            </a>
+                        </li>
+                        <li>
+                            <a href="terminos.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-journal-text me-2"></i>Términos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="text-white mb-3">Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-envelope me-2 text-white opacity-75"></i>
+                            <a href="mailto:soporte@medpredict.com"
+                                class="text-white opacity-75 text-decoration-none">soporte@medpredict.com</a>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="bi bi-telephone me-2 text-white opacity-75"></i>
+                            <span class="text-white opacity-75">+1 234 567 890</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light opacity-25">
+            <div class="text-center text-light opacity-75">
+                <small>© 2025 MedPredict Pro. Todos los derechos reservados.</small>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas2image@1.0.5/canvas2image.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Configuración para jsPDF (asegúrate de tener las librerías incluidas)
+        const { jsPDF } = window.jspdf;
+
+        // Función para formatear la fecha actual
+        function getCurrentDate() {
+            const today = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            return today.toLocaleDateString('es-ES', options);
+        }
+
+        // Establecer la fecha actual al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current_date').value = getCurrentDate();
+        });
+
+        document.getElementById('publishEvaluation').addEventListener('click', function () {
+            // Verificar si hay datos para generar el PDF
+            if (!document.getElementById('first_name').value ||
+                !document.getElementById('last_name').value) {
+                alert('Complete los datos del paciente antes de generar el PDF');
+                return;
+            }
+
+            // Crear el documento PDF en formato A4 (vertical)
+            const doc = new jsPDF('p', 'mm', 'a4');
+
+            // Configuración inicial
+            const margin = 15;
+            let yPos = margin;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const centerX = pageWidth / 2;
+
+            // Logo y encabezado
+            const logo = new Image();
+            logo.src = 'favicon-new.png';
+
+            // Esperar a que cargue el logo (en caso de que lo uses)
+            logo.onload = function () {
+                // Encabezado
+                doc.setFontSize(20);
+                doc.setTextColor(40);
+                doc.setFont('helvetica', 'bold');
+                doc.text('FICHA CLÍNICA', centerX, yPos, { align: 'center' });
+                yPos += 10;
+
+                doc.setFontSize(12);
+                doc.setTextColor(100);
+                doc.setFont('helvetica', 'normal');
+                doc.text('MedPredict Pro - Sistema de Evaluación de Riesgo', centerX, yPos, { align: 'center' });
+                yPos += 15;
+
+                // Línea divisoria
+                doc.setDrawColor(200);
+                doc.setLineWidth(0.5);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                yPos += 10;
+
+                // Datos del paciente
+                doc.setFontSize(14);
+                doc.setTextColor(40);
+                doc.setFont('helvetica', 'bold');
+                doc.text('DATOS DEL PACIENTE', margin, yPos);
+                yPos += 8;
+
+                doc.setFontSize(12);
+                doc.setTextColor(80);
+                doc.setFont('helvetica', 'normal');
+                doc.text(`Nombre: ${document.getElementById('first_name').value} ${document.getElementById('last_name').value}`, margin, yPos);
+                yPos += 7;
+                doc.text(`RUT: ${document.getElementById('rut').value}`, margin, yPos);
+                yPos += 7;
+                
+                // Obtener el sexo seleccionado
+                const selectedGender = document.querySelector('input[name="gender"]:checked');
+                if (selectedGender) {
+                    doc.text(`Sexo: ${selectedGender.value}`, margin, yPos);
+                    yPos += 7;
+                }
+                
+                doc.text(`Edad: ${document.getElementById('age').value} años`, margin, yPos);
+                yPos += 7;
+                doc.text(`Fecha de evaluación: ${document.getElementById('current_date').value}`, margin, yPos);
+                yPos += 7;
+                doc.text(`Profesional: ${document.getElementById('professional').value}`, margin, yPos);
+                yPos += 10;
+
+                // Datos clínicos
+                doc.setFontSize(14);
+                doc.setTextColor(40);
+                doc.setFont('helvetica', 'bold');
+                doc.text('DATOS CLÍNICOS', margin, yPos);
+                yPos += 8;
+
+                doc.setFontSize(12);
+                doc.setTextColor(80);
+                doc.setFont('helvetica', 'normal');
+                doc.text(`Presión arterial: ${document.getElementById('blood_pressure').value} mmHg`, margin, yPos);
+                yPos += 7;
+                doc.text(`Frecuencia cardíaca: ${document.getElementById('heart_rate').value} lpm`, margin, yPos);
+                yPos += 7;
+                doc.text(`Saturación de oxígeno: ${document.getElementById('oxygen_level').value}%`, margin, yPos);
+                yPos += 7;
+                doc.text(`Condiciones crónicas: ${document.getElementById('chronic_conditions').options[document.getElementById('chronic_conditions').selectedIndex].text}`, margin, yPos);
+                yPos += 10;
+
+                // Resultados de evaluación (si existen)
+                const resultsDiv = document.getElementById('results');
+                if (resultsDiv && resultsDiv.textContent !== 'Complete el formulario para obtener la evaluación de riesgo') {
+                    doc.setFontSize(14);
+                    doc.setTextColor(40);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('RESULTADOS DE EVALUACIÓN', margin, yPos);
+                    yPos += 8;
+
+                    doc.setFontSize(12);
+                    doc.setTextColor(80);
+                    doc.setFont('helvetica', 'normal');
+
+                    // Extraer texto de los resultados
+                    const resultText = resultsDiv.innerText.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+                    const splitText = doc.splitTextToSize(resultText, pageWidth - 2 * margin);
+                    doc.text(splitText, margin, yPos);
+                    yPos += splitText.length * 7;
+                }
+
+                // Gráficos (si existen)
+                const mortalityCanvas = document.getElementById('mortalityChart');
+                const severityCanvas = document.getElementById('severityChart');
+
+                if (mortalityCanvas && severityCanvas) {
+                    yPos += 10;
+                    doc.setFontSize(14);
+                    doc.setTextColor(40);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('GRÁFICOS DE EVALUACIÓN', centerX, yPos, { align: 'center' });
+                    yPos += 10;
+
+                    // Agregar gráficos como imágenes (50% de ancho cada uno)
+                    const chartWidth = (pageWidth - 2 * margin - 10) / 2;
+                    const chartHeight = 60;
+
+                    // Gráfico de mortalidad
+                    doc.addImage(mortalityCanvas.toDataURL('image/png'), 'PNG', margin, yPos, chartWidth, chartHeight);
+
+                    // Gráfico de severidad
+                    doc.addImage(severityCanvas.toDataURL('image/png'), 'PNG', margin + chartWidth + 10, yPos, chartWidth, chartHeight);
+
+                    yPos += chartHeight + 10;
+                }
+
+                // Factores de riesgo (si existen)
+                const riskFactorsDiv = document.getElementById('riskFactors');
+                if (riskFactorsDiv && riskFactorsDiv.innerHTML.trim() !== '') {
+                    doc.setFontSize(14);
+                    doc.setTextColor(40);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('FACTORES DE RIESGO DESTACADOS', margin, yPos);
+                    yPos += 8;
+
+                    doc.setFontSize(12);
+                    doc.setTextColor(80);
+                    doc.setFont('helvetica', 'normal');
+
+                    const riskFactorsText = riskFactorsDiv.innerText.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+                    const splitRiskText = doc.splitTextToSize(riskFactorsText, pageWidth - 2 * margin);
+                    doc.text(splitRiskText, margin, yPos);
+                    yPos += splitRiskText.length * 7;
+                }
+
+                // Pie de página
+                const today = new Date();
+                const dateStr = today.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                yPos = doc.internal.pageSize.getHeight() - 20;
+                doc.setFontSize(10);
+                doc.setTextColor(150);
+                doc.setFont('helvetica', 'italic');
+                doc.text(`Documento generado el ${dateStr} por MedPredict Pro`, centerX, yPos, { align: 'center' });
+
+                // Guardar el PDF
+                const fileName = `Ficha_${document.getElementById('last_name').value}_${document.getElementById('first_name').value}.pdf`;
+                doc.save(fileName);
+            };
+        });
+    </script>
+</body>
+
+</html>

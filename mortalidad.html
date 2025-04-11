@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riesgo de Mortalidad | MedPredict Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .risk-meter {
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+        .risk-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        .parameter-help {
+            cursor: help;
+            color: #2e7d32;
+            border-bottom: 1px dashed #2e7d32;
+        }
+    </style>
+</head>
+<body class="bg-hospital-light">
+    <!-- Navbar (usar el mismo del sistema principal) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-hospital-red">
+        <div class="container">
+            <a class="navbar-brand" href="predict.html">
+                <i class="bi bi-heart-pulse me-2"></i>
+                <span class="fw-bold">MedPredict</span> Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="predict.html"><i class="bi bi-speedometer2 me-1"></i> Evaluación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="history.html"><i class="bi bi-graph-up me-1"></i> Histórico</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-calculator-fill me-1"></i> Predictores
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="severidad.html">
+                                <i class="bi bi-clipboard2-pulse me-1"></i> Score de Severidad
+                            </a></li>
+                            <li><a class="dropdown-item" href="mortalidad.html">
+                                <i class="bi bi-activity me-1"></i> Riesgo de Mortalidad
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="custom.html">
+                                <i class="bi bi-sliders me-1"></i> Predictor Personalizado
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-cpu-fill me-1"></i> Modelos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="model.html">
+                                <i class="bi bi-speedometer2 me-1"></i> Rendimiento
+                            </a></li>
+                            <li><a class="dropdown-item" href="retraining.html">
+                                <i class="bi bi-arrow-repeat me-1"></i> Re-entrenamiento
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="bi bi-power me-1"></i> Cerrar Sesion</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Tarjeta de cálculo -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-hospital-red text-white">
+                        <h5 class="mb-0"><i class="bi bi-activity me-2"></i>Calculadora de Riesgo de Mortalidad</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="mortalityForm">
+                            <!-- Sección de datos del paciente -->
+                            <div class="mb-4">
+                                <h6 class="text-hospital-red mb-3"><i class="bi bi-person-vcard me-1"></i> Datos Básicos</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Edad <span class="parameter-help" title="Edad avanzada aumenta riesgo">(?)</span></label>
+                                        <input type="number" class="form-control" id="age" min="18" max="120" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Unidad</label>
+                                        <select class="form-select" id="unit">
+                                            <option value="general">General</option>
+                                            <option value="icu">UCI</option>
+                                            <option value="er">Urgencias</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Diagnóstico Principal</label>
+                                        <select class="form-select" id="diagnosis">
+                                            <option value="sepsis">Sepsis</option>
+                                            <option value="cardiac">Cardiopatía</option>
+                                            <option value="respiratory">Insuficiencia Respiratoria</option>
+                                            <option value="trauma">Trauma</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sección de parámetros clínicos -->
+                            <div class="mb-4">
+                                <h6 class="text-hospital-red mb-3"><i class="bi bi-heartbreak me-1"></i> Factores de Riesgo</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">SOFA Score <span class="parameter-help" title="Sequential Organ Failure Assessment">(?)</span></label>
+                                        <input type="number" class="form-control" id="sofaScore" min="0" max="24">
+                                        <small class="text-muted">0-24 puntos</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Lactato (mmol/L) <span class="parameter-help" title="Niveles >2 indican hipoperfusión">(?)</span></label>
+                                        <input type="number" step="0.1" class="form-control" id="lactate" min="0" max="20">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Creatinina (mg/dL) <span class="parameter-help" title="Función renal deteriorada">(?)</span></label>
+                                        <input type="number" step="0.01" class="form-control" id="creatinine" min="0" max="10">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sección de soporte vital -->
+                            <div class="mb-4">
+                                <h6 class="text-hospital-red mb-3"><i class="bi bi-heart-pulse me-1"></i> Soporte Vital</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Vasopresores</label>
+                                        <select class="form-select" id="vasopressors">
+                                            <option value="none">Ninguno</option>
+                                            <option value="low">Dosis baja</option>
+                                            <option value="high">Dosis alta</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Ventilación Mecánica</label>
+                                        <select class="form-select" id="ventilation">
+                                            <option value="no">No</option>
+                                            <option value="yes">Sí</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">RRT <span class="parameter-help" title="Terapia de reemplazo renal">(?)</span></label>
+                                        <select class="form-select" id="rrt">
+                                            <option value="no">No</option>
+                                            <option value="yes">Sí</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botón de cálculo -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-hospital-red" id="calculateBtn">
+                                    <i class="bi bi-calculator me-1"></i> Calcular Riesgo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Resultados -->
+                <div class="card shadow-sm d-none" id="resultsCard">
+                    <div class="card-header bg-hospital-red text-white">
+                        <h5 class="mb-0"><i class="bi bi-clipboard2-data me-2"></i>Resultados</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert" id="riskAlert">
+                            <h4 class="alert-heading" id="riskLevel"></h4>
+                            <div class="risk-meter my-3">
+                                <div class="risk-fill" id="riskBar"></div>
+                            </div>
+                            <p id="riskDescription"></p>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Probabilidad:</strong> <span id="riskValue">0</span>%</p>
+                                    <p class="mb-1"><strong>Score Total:</strong> <span id="totalScore">0</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Factores Clave:</strong></p>
+                                    <ul id="keyFactors" class="small">
+                                        <!-- Factores dinámicos se insertarán aquí -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-outline-hospital-red me-2" id="saveResults">
+                                <i class="bi bi-save me-1"></i> Guardar en Historial
+                            </button>
+                            <button class="btn btn-outline-secondary" id="exportResults">
+                                <i class="bi bi-file-earmark-pdf me-1"></i> Exportar PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-hospital-red text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h5 class="d-flex align-items-center">
+                        <i class="bi bi-heart-pulse me-2"></i>
+                        <span>MedPredict Pro</span>
+                    </h5>
+                    <p class="text-light opacity-75 mb-0">Sistema de apoyo clínico para evaluación de riesgo de
+                        mortalidad y severidad.</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">Enlaces</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="documentacion.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-file-earmark-text me-2"></i>Documentación
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="privacidad.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-shield-lock me-2"></i>Privacidad
+                            </a>
+                        </li>
+                        <li>
+                            <a href="terminos.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-journal-text me-2"></i>Términos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="text-white mb-3">Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-envelope me-2 text-white opacity-75"></i>
+                            <a href="mailto:soporte@medpredict.com"
+                                class="text-white opacity-75 text-decoration-none">soporte@medpredict.com</a>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="bi bi-telephone me-2 text-white opacity-75"></i>
+                            <span class="text-white opacity-75">+1 234 567 890</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light opacity-25">
+            <div class="text-center text-light opacity-75">
+                <small>© 2025 MedPredict Pro. Todos los derechos reservados.</small>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('mortalityForm');
+            const resultsCard = document.getElementById('resultsCard');
+            const riskAlert = document.getElementById('riskAlert');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                calculateMortalityRisk();
+            });
+
+            function calculateMortalityRisk() {
+                // Obtener valores
+                const age = parseInt(document.getElementById('age').value) || 50;
+                const sofa = parseInt(document.getElementById('sofaScore').value) || 0;
+                const lactate = parseFloat(document.getElementById('lactate').value) || 1.0;
+                const creatinine = parseFloat(document.getElementById('creatinine').value) || 0.8;
+                const vasopressors = document.getElementById('vasopressors').value;
+                const ventilation = document.getElementById('ventilation').value;
+                const rrt = document.getElementById('rrt').value;
+                const diagnosis = document.getElementById('diagnosis').value;
+
+                // Calcular score (modelo simplificado)
+                let score = 0;
+                score += age > 65 ? 10 : (age > 50 ? 5 : 0);
+                score += sofa * 3;
+                score += lactate > 2 ? 15 : 0;
+                score += creatinine > 1.2 ? 10 : 0;
+                score += vasopressors === 'low' ? 10 : (vasopressors === 'high' ? 20 : 0);
+                score += ventilation === 'yes' ? 15 : 0;
+                score += rrt === 'yes' ? 20 : 0;
+                
+                // Ajuste por diagnóstico
+                if (diagnosis === 'sepsis') score *= 1.3;
+                if (diagnosis === 'cardiac') score *= 1.2;
+
+                // Convertir a porcentaje (0-100%)
+                let riskPercentage = Math.min(100, Math.round(score * 0.8));
+
+                // Mostrar resultados
+                displayResults(riskPercentage, score);
+            }
+
+            function displayResults(risk, score) {
+                let level, description, alertClass, barColor;
+                const keyFactors = [];
+                
+                if (risk <= 20) {
+                    level = "RIESGO BAJO";
+                    description = "Mortalidad hospitalaria estimada baja. Monitoreo estándar recomendado.";
+                    alertClass = "alert-success";
+                    barColor = "#81c784";
+                } else if (risk <= 50) {
+                    level = "RIESGO MODERADO";
+                    description = "Paciente de riesgo intermedio. Considerar medidas preventivas y monitoreo frecuente.";
+                    alertClass = "alert-warning";
+                    barColor = "#ffb74d";
+                } else {
+                    level = "RIESGO ALTO";
+                    description = "Alta probabilidad de mortalidad. Intervención inmediata y UCI recomendada.";
+                    alertClass = "alert-danger";
+                    barColor = "#e57373";
+                }
+
+                // Identificar factores clave
+                const age = parseInt(document.getElementById('age').value);
+                if (age > 65) keyFactors.push("Edad avanzada (>65)");
+                
+                if (parseInt(document.getElementById('sofaScore').value) > 8) {
+                    keyFactors.push("SOFA Score elevado");
+                }
+                
+                if (parseFloat(document.getElementById('lactate').value) > 2) {
+                    keyFactors.push("Hiperlactatemia (>2 mmol/L)");
+                }
+
+                // Actualizar UI
+                document.getElementById('riskValue').textContent = risk;
+                document.getElementById('totalScore').textContent = score;
+                document.getElementById('riskLevel').textContent = level;
+                document.getElementById('riskDescription').textContent = description;
+                
+                // Barra de progreso
+                const riskBar = document.getElementById('riskBar');
+                riskBar.style.width = `${risk}%`;
+                riskBar.style.backgroundColor = barColor;
+                riskBar.textContent = `${risk}%`;
+                
+                // Factores clave
+                const factorsList = document.getElementById('keyFactors');
+                factorsList.innerHTML = keyFactors.map(f => `<li>${f}</li>`).join('');
+                
+                // Configurar alerta
+                riskAlert.className = `alert ${alertClass}`;
+                resultsCard.classList.remove('d-none');
+                
+                // Scroll a resultados
+                resultsCard.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Botones de acción
+            document.getElementById('saveResults').addEventListener('click', function() {
+                alert("Resultados guardados en el historial clínico");
+            });
+
+            document.getElementById('exportResults').addEventListener('click', function() {
+                // Simulación de exportación
+                alert("Generando PDF con los resultados...");
+            });
+
+            // Tooltips
+            const tooltipTriggers = document.querySelectorAll('.parameter-help');
+            tooltipTriggers.forEach(el => {
+                new bootstrap.Tooltip(el);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictor Personalizado | MedPredict Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .parameter-card {
+            border-left: 3px solid #2e7d32;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        .parameter-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .param-help {
+            cursor: help;
+            color: #2e7d32;
+            border-bottom: 1px dashed #2e7d32;
+        }
+        .model-diagram {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="bg-hospital-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-hospital-red">
+        <div class="container">
+            <a class="navbar-brand" href="predict.html">
+                <i class="bi bi-heart-pulse me-2"></i>
+                <span class="fw-bold">MedPredict</span> Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="predict.html"><i class="bi bi-speedometer2 me-1"></i> Evaluación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="history.html"><i class="bi bi-graph-up me-1"></i> Histórico</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-calculator-fill me-1"></i> Predictores
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="severidad.html">
+                                <i class="bi bi-clipboard2-pulse me-1"></i> Score de Severidad
+                            </a></li>
+                            <li><a class="dropdown-item" href="mortalidad.html">
+                                <i class="bi bi-activity me-1"></i> Riesgo de Mortalidad
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="custom.html">
+                                <i class="bi bi-sliders me-1"></i> Predictor Personalizado
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-cpu-fill me-1"></i> Modelos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="model.html">
+                                <i class="bi bi-speedometer2 me-1"></i> Rendimiento
+                            </a></li>
+                            <li><a class="dropdown-item" href="retraining.html">
+                                <i class="bi bi-arrow-repeat me-1"></i> Re-entrenamiento
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="bi bi-power me-1"></i> Cerrar Sesion</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <!-- Tarjeta Principal -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-hospital-red text-white">
+                        <h5 class="mb-0"><i class="bi bi-sliders me-2"></i>Predictor Personalizado</h5>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Información Introductoria -->
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i> Combine parámetros para crear escenarios personalizados y simular diferentes condiciones clínicas.
+                        </div>
+                        
+                        <!-- Selección de Modelo -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Seleccione Modelo Predictivo</label>
+                                <select class="form-select" id="modelType">
+                                    <option value="apache">APACHE IV</option>
+                                    <option value="sofa">SOFA</option>
+                                    <option value="custom">Personalizado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Tipo de Predicción</label>
+                                <select class="form-select" id="predictionType">
+                                    <option value="mortality">Mortalidad</option>
+                                    <option value="length_stay">Días de Estancia</option>
+                                    <option value="complications">Complicaciones</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Parámetros Dinámicos -->
+                        <div id="dynamicParams">
+                            <!-- Contenido cargado dinámicamente -->
+                        </div>
+                        
+                        <!-- Sección de Resultados (oculta inicialmente) -->
+                        <div class="card mt-4 d-none" id="resultsSection">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-graph-up me-1"></i> Resultados de la Predicción</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <h5 id="predictionTitle">Predicción de Mortalidad</h5>
+                                            <div class="progress" style="height: 30px;">
+                                                <div id="predictionBar" class="progress-bar progress-bar-striped" 
+                                                    role="progressbar" style="width: 0%">0%</div>
+                                            </div>
+                                            <div class="mt-2 text-end">
+                                                <small class="text-muted" id="confidenceText">Confianza: 78%</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Factores Clave:</h6>
+                                        <ul class="list-group" id="keyFactorsList">
+                                            <!-- Factores dinámicos -->
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="alert" id="clinicalRecommendation">
+                                            <i class="bi bi-lightbulb me-2"></i>
+                                            <span id="recommendationText">Recomendaciones aparecerán aquí</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de Acción -->
+                        <div class="d-grid mt-4">
+                            <button class="btn btn-hospital-red" id="runCustomPredict">
+                                <i class="bi bi-gear-wide-connected me-1"></i> Ejecutar Predicción
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-hospital-red text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h5 class="d-flex align-items-center">
+                        <i class="bi bi-heart-pulse me-2"></i>
+                        <span>MedPredict Pro</span>
+                    </h5>
+                    <p class="text-light opacity-75 mb-0">Sistema de apoyo clínico para evaluación de riesgo de
+                        mortalidad y severidad.</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">Enlaces</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="documentacion.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-file-earmark-text me-2"></i>Documentación
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="privacidad.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-shield-lock me-2"></i>Privacidad
+                            </a>
+                        </li>
+                        <li>
+                            <a href="terminos.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-journal-text me-2"></i>Términos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="text-white mb-3">Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-envelope me-2 text-white opacity-75"></i>
+                            <a href="mailto:soporte@medpredict.com"
+                                class="text-white opacity-75 text-decoration-none">soporte@medpredict.com</a>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="bi bi-telephone me-2 text-white opacity-75"></i>
+                            <span class="text-white opacity-75">+1 234 567 890</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light opacity-25">
+            <div class="text-center text-light opacity-75">
+                <small>© 2025 MedPredict Pro. Todos los derechos reservados.</small>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modelType = document.getElementById('modelType');
+            const dynamicParams = document.getElementById('dynamicParams');
+            const predictionType = document.getElementById('predictionType');
+            const runButton = document.getElementById('runCustomPredict');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            // Cargar parámetros iniciales
+            loadModelParameters(modelType.value, predictionType.value);
+            
+            // Event listeners
+            modelType.addEventListener('change', function() {
+                loadModelParameters(this.value, predictionType.value);
+            });
+            
+            predictionType.addEventListener('change', function() {
+                loadModelParameters(modelType.value, this.value);
+            });
+            
+            runButton.addEventListener('click', function() {
+                runPrediction();
+            });
+            
+            // Función para cargar parámetros del modelo
+            function loadModelParameters(model, prediction) {
+                let html = '';
+                
+                if (model === 'apache') {
+                    html = `
+                        <div class="alert alert-primary">
+                            <i class="bi bi-info-circle me-2"></i> 
+                            APACHE IV: Sistema de predicción de mortalidad en UCI (0-100 puntos)
+                        </div>
+                        
+                        <div class="parameter-card card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-heart-pulse me-1"></i> Parámetros Fisiológicos</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Temperatura (°C) <span class="param-help" title="Temperatura central">(?)</span></label>
+                                        <input type="number" step="0.1" class="form-control" id="temp" min="30" max="45" value="37.0">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">FC (lpm) <span class="param-help" title="Frecuencia cardíaca">(?)</span></label>
+                                        <input type="number" class="form-control" id="hr" min="30" max="200" value="80">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">PAS (mmHg) <span class="param-help" title="Presión arterial sistólica">(?)</span></label>
+                                        <input type="number" class="form-control" id="bp" min="40" max="300" value="120">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="parameter-card card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-droplet me-1"></i> Parámetros Bioquímicos</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Creatinina (mg/dL)</label>
+                                        <input type="number" step="0.01" class="form-control" id="creat" min="0" max="10" value="0.9">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Hematocrito (%)</label>
+                                        <input type="number" class="form-control" id="hct" min="10" max="60" value="42">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Leucocitos (x10³/µL)</label>
+                                        <input type="number" step="0.1" class="form-control" id="wbc" min="0" max="50" value="7.5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (model === 'sofa') {
+                    html = `
+                        <div class="alert alert-primary">
+                            <i class="bi bi-info-circle me-2"></i> 
+                            SOFA: Evaluación secuencial de fallo orgánico (0-24 puntos)
+                        </div>
+                        
+                        <div class="parameter-card card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-lungs me-1"></i> Sistema Respiratorio</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">PaO₂/FiO₂ (mmHg) <span class="param-help" title="Relación oxigenación/ventilación">(?)</span></label>
+                                        <input type="number" class="form-control" id="pao2" min="50" max="600" value="300">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Ventilación Mecánica</label>
+                                        <select class="form-select" id="vent">
+                                            <option value="0">No</option>
+                                            <option value="1">Sí</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="parameter-card card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-heart me-1"></i> Sistema Cardiovascular</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">PA Media (mmHg)</label>
+                                        <input type="number" class="form-control" id="map" min="30" max="150" value="70">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Vasopresores</label>
+                                        <select class="form-select" id="vaso">
+                                            <option value="0">No</option>
+                                            <option value="1">Dopamina ≤5</option>
+                                            <option value="2">Dopamina >5 o Epi ≤0.1</option>
+                                            <option value="3">Dopamina >15 o Epi >0.1</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    html = `
+                        <div class="alert alert-primary">
+                            <i class="bi bi-info-circle me-2"></i> 
+                            Configure su propio modelo predictivo combinando variables
+                        </div>
+                        
+                        <div class="parameter-card card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-plus-circle me-1"></i> Añadir Variables</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Seleccionar Variable</label>
+                                        <select class="form-select" id="customVar">
+                                            <option value="age">Edad</option>
+                                            <option value="lactate">Lactato</option>
+                                            <option value="crp">PCR</option>
+                                            <option value="procalcitonin">Procalcitonina</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Peso Relativo</label>
+                                        <select class="form-select" id="customWeight">
+                                            <option value="1">Bajo</option>
+                                            <option value="2" selected>Medio</option>
+                                            <option value="3">Alto</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-sm btn-outline-hospital-red">
+                                        <i class="bi bi-plus me-1"></i> Añadir Variable
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Modelos personalizados requieren validación clínica antes de uso
+                        </div>
+                    `;
+                }
+                
+                dynamicParams.innerHTML = html;
+                
+                // Inicializar tooltips
+                const tooltips = document.querySelectorAll('.param-help');
+                tooltips.forEach(el => {
+                    new bootstrap.Tooltip(el);
+                });
+            }
+            
+            // Función para ejecutar predicción
+            function runPrediction() {
+                // Simular cálculo (en producción sería llamada a API)
+                const model = modelType.value;
+                const prediction = predictionType.value;
+                let result = 0;
+                let confidence = 0;
+                let keyFactors = [];
+                
+                if (model === 'apache') {
+                    result = Math.min(100, Math.floor(Math.random() * 40) + 10);
+                    confidence = 85;
+                    keyFactors = [
+                        "Edad avanzada",
+                        "Creatinina elevada",
+                        "Leucocitosis"
+                    ];
+                } else if (model === 'sofa') {
+                    result = Math.min(100, Math.floor(Math.random() * 60) + 20);
+                    confidence = 78;
+                    keyFactors = [
+                        "Dosis altas de vasopresores",
+                        "Ventilación mecánica"
+                    ];
+                } else {
+                    result = Math.min(100, Math.floor(Math.random() * 80) + 5);
+                    confidence = 65;
+                    keyFactors = [
+                        "Combinación personalizada",
+                        "Variables no validadas"
+                    ];
+                }
+                
+                // Mostrar resultados
+                displayResults(result, confidence, keyFactors, prediction);
+            }
+            
+            // Mostrar resultados
+            function displayResults(percentage, confidence, factors, type) {
+                // Actualizar barra de progreso
+                const predictionBar = document.getElementById('predictionBar');
+                predictionBar.style.width = `${percentage}%`;
+                predictionBar.textContent = `${percentage}%`;
+                
+                // Color según riesgo
+                if (percentage < 30) {
+                    predictionBar.className = 'progress-bar progress-bar-striped bg-success';
+                } else if (percentage < 70) {
+                    predictionBar.className = 'progress-bar progress-bar-striped bg-warning';
+                } else {
+                    predictionBar.className = 'progress-bar progress-bar-striped bg-danger';
+                }
+                
+                // Actualizar texto
+                document.getElementById('confidenceText').textContent = `Confianza: ${confidence}%`;
+                
+                // Factores clave
+                const factorsList = document.getElementById('keyFactorsList');
+                factorsList.innerHTML = factors.map(f => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        ${f}
+                        <span class="badge bg-hospital-red rounded-pill">!</span>
+                    </li>
+                `).join('');
+                
+                // Recomendación clínica
+                const recommendation = document.getElementById('recommendationText');
+                const recAlert = document.getElementById('clinicalRecommendation');
+                
+                if (percentage < 30) {
+                    recommendation.textContent = "Riesgo bajo. Continuar monitoreo estándar.";
+                    recAlert.className = "alert alert-success";
+                } else if (percentage < 70) {
+                    recommendation.textContent = "Riesgo intermedio. Considerar medidas preventivas y reevaluar en 24h.";
+                    recAlert.className = "alert alert-warning";
+                } else {
+                    recommendation.textContent = "Riesgo alto. Intervención inmediata recomendada. Considerar UCI.";
+                    recAlert.className = "alert alert-danger";
+                }
+                
+                // Título según tipo
+                const title = document.getElementById('predictionTitle');
+                if (type === 'mortality') {
+                    title.textContent = "Predicción de Mortalidad";
+                } else if (type === 'length_stay') {
+                    title.textContent = "Días Estimados de Estancia";
+                } else {
+                    title.textContent = "Riesgo de Complicaciones";
+                }
+                
+                // Mostrar sección
+                resultsSection.classList.remove('d-none');
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+</html>
