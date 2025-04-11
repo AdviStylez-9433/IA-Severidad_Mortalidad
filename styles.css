@@ -1,0 +1,269 @@
+/* Estilos para el sticky footer */
+html, body {
+    height: 100%;
+}
+
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5faf5;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Usa toda la altura visible del viewport */
+}
+
+/* Color principal verde hospital */
+.bg-hospital-red {
+    background-color: #2e7d32 !important; /* Verde oscuro hospitalario */
+}
+
+/* Botones */
+.btn-hospital-red {
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+}
+
+.btn-hospital-red:hover {
+    background-color: #1b5e20;
+    color: white;
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-weight: 500;
+}
+
+.nav-link.active {
+    font-weight: 600;
+    border-bottom: 3px solid #81c784;
+}
+
+/* Cajas de filtros */
+.filter-box {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+.filter-box h5 {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+/* Tarjetas */
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+    border-radius: 8px 8px 0 0 !important;
+}
+
+/* Ajustes específicos para la última card */
+.card.last-card {
+    margin-bottom: 2rem; /* Margen inferior adicional */
+}
+
+/* Elementos de lista de historial */
+.evaluation-item {
+    border-left: 4px solid #81c784;
+    transition: all 0.2s ease;
+}
+
+.evaluation-item:hover {
+    background-color: #f1f8e9;
+    transform: translateY(-2px);
+}
+
+.risk-low {
+    color: #388e3c;
+    background-color: #e8f5e9;
+}
+
+.risk-medium {
+    color: #f57f17;
+    background-color: #fff8e1;
+}
+
+.risk-high {
+    color: #d32f2f;
+    background-color: #ffebee;
+}
+
+.container {
+    flex: 1; /* Hace que el contenido principal ocupe el espacio disponible */
+}
+
+.container.main-content {
+    padding-bottom: 2rem; /* Espacio extra en la parte inferior */
+}
+
+footer {
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    margin-top: auto; /* Empuja el footer hacia abajo */
+    width: 100%;
+    padding: 1.5rem 0;
+}
+
+/* Modal */
+.modal-header {
+    border-radius: 8px 8px 0 0;
+}
+
+/* Gráficos */
+.chart-container {
+    position: relative;
+    height: 200px;
+}
+
+/* Paginación */
+.page-item.active .page-link {
+    background-color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.page-link {
+    color: #2e7d32;
+}
+
+/* Iconos */
+.bi {
+    vertical-align: middle;
+}
+
+/* Spinner */
+.spinner-border.text-hospital-red {
+    color: #2e7d32 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filter-box {
+        margin-bottom: 1rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.d-none {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Badges */
+.badge-hospital {
+    background-color: #a5d6a7;
+    color: #1b5e20;
+    font-weight: 500;
+}
+
+/* Formularios */
+.form-control:focus, .form-select:focus {
+    border-color: #81c784;
+    box-shadow: 0 0 0 0.25rem rgba(46, 125, 50, 0.25);
+}
+
+/* Tablas */
+.table-hover tbody tr:hover {
+    background-color: #f1f8e9;
+}
+
+/* Versión alternativa si prefieres usar span con clase */
+.severity-indicator {
+    display: inline-block;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 4px;
+    border-radius: 11px;
+    background-color: #f44336;
+    color: white;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 22px;
+    margin-left: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Colores según el nivel de severidad */
+.severity-1 {
+    background-color: #4caf50; /* Verde - Nivel 1 */
+}
+
+.severity-2 {
+    background-color: #8bc34a; /* Verde claro - Nivel 2 */
+}
+
+.severity-3 {
+    background-color: #ffc107; /* Amarillo - Nivel 3 */
+}
+
+.severity-4 {
+    background-color: #ff9800; /* Naranja - Nivel 4 */
+}
+
+.severity-5 {
+    background-color: #f44336; /* Rojo - Nivel 5 */
+}
+
+/* Botón PDF */
+.btn-outline-hospital-red {
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.btn-outline-hospital-red:hover {
+    color: white;
+    background-color: #2e7d32;
+}
+
+/* Estilo para el botón de limpiar */
+#clearForm {
+    background-color: #dc3545;
+    transition: all 0.3s ease;
+}
+
+#clearForm:hover {
+    background-color: #aa313e;
+    color: white;
+}
+
+/* Estilo para el toast de confirmación */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1100;
+    min-width: 250px;
+}
+
+#publishEvaluation {
+    transition: all 0.3s ease;
+}
+
+#publishEvaluation:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}

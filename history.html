@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedPredict Pro - Histórico de Evaluaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon-new.png" type="image/png">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-hospital-red">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-heart-pulse me-2"></i>
+                <span class="fw-bold">MedPredict</span> Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="bi bi-speedometer2 me-1"></i> Evaluación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="history.html"><i class="bi bi-graph-up me-1"></i> Histórico</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-hospital-red text-white">
+                        <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Filtros de Búsqueda</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="searchName" class="form-label">Nombre del Paciente</label>
+                                <input type="text" class="form-control" id="searchName"
+                                    placeholder="Buscar por nombre...">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="searchDate" class="form-label">Fecha</label>
+                                <input type="date" class="form-control" id="searchDate">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="searchRisk" class="form-label">Nivel de Riesgo</label>
+                                <select class="form-select" id="searchRisk">
+                                    <option value="">Todos</option>
+                                    <option value="low">Bajo</option>
+                                    <option value="medium">Medio</option>
+                                    <option value="high">Alto</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button id="searchButton" class="btn btn-hospital-red w-100">
+                                    <i class="bi bi-search me-2"></i>Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div
+                        class="card-header bg-hospital-red text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Histórico de Evaluaciones</h5>
+                        <div>
+                            <span class="badge bg-white text-black">Total: <span id="totalEvaluations">0</span></span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Paciente</th>
+                                        <th>Edad</th>
+                                        <th>Fecha</th>
+                                        <th>Riesgo</th>
+                                        <th>Severidad</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="evaluationsTable">
+                                    <!-- Datos se cargarán dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <nav aria-label="Page navigation" class="mt-4">
+                            <ul class="pagination justify-content-center" id="pagination">
+                                <!-- Paginación se generará dinámicamente -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-hospital-red text-white py-4 mt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h5 class="d-flex align-items-center">
+                        <i class="bi bi-heart-pulse me-2"></i>
+                        <span>MedPredict Pro</span>
+                    </h5>
+                    <p class="text-light opacity-75 mb-0">Sistema de apoyo clínico para evaluación de riesgo de
+                        mortalidad y severidad.</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">Enlaces</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="documentacion.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-file-earmark-text me-2"></i>Documentación
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="privacidad.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-shield-lock me-2"></i>Privacidad
+                            </a>
+                        </li>
+                        <li>
+                            <a href="terminos.html"
+                                class="text-white text-decoration-none opacity-75 hover-opacity-100 d-flex align-items-center">
+                                <i class="bi bi-journal-text me-2"></i>Términos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="text-white mb-3">Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-envelope me-2 text-white opacity-75"></i>
+                            <a href="mailto:soporte@medpredict.com"
+                                class="text-white opacity-75 text-decoration-none">soporte@medpredict.com</a>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="bi bi-telephone me-2 text-white opacity-75"></i>
+                            <span class="text-white opacity-75">+1 234 567 890</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light opacity-25">
+            <div class="text-center text-light opacity-75">
+                <small>© 2025 MedPredict Pro. Todos los derechos reservados.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal para detalles -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-hospital-red text-white">
+                    <h5 class="modal-title">Detalles de Evaluación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="detailModalContent">
+                    <!-- Contenido se cargará dinámicamente -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-hospital-red" id="generatePdfFromHistory">
+                        <i class="bi bi-file-earmark-pdf me-2"></i>Generar PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="maintenanceModal" tabindex="-1" aria-hidden="false" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title"><i class="bi bi-tools me-2"></i>Página en Mantenimiento</h5>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4 class="mb-3">¡Estamos trabajando para mejorar tu experiencia!</h4>
+                    <p class="mb-4">La sección de histórico de evaluaciones no está disponible temporalmente debido a
+                        trabajos de mantenimiento.</p>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-clock-history me-2"></i>
+                        Estimamos que el servicio estará disponible nuevamente en 2 horas.
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <a href="index.html" class="btn btn-hospital-red">
+                        <i class="bi bi-arrow-left me-2"></i>Volver a Evaluación
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="history.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mostrar el modal de mantenimiento al cargar la página
+            const maintenanceModal = new bootstrap.Modal(document.getElementById('maintenanceModal'));
+            maintenanceModal.show();
+
+            // Deshabilitar todos los elementos interactivos
+            document.querySelectorAll('input, select, button, a').forEach(element => {
+                if (!element.classList.contains('btn-hospital-red')) { // Excluir el botón de volver
+                    element.disabled = true;
+                    element.style.opacity = "0.5";
+                    element.style.cursor = "not-allowed";
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
