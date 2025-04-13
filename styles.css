@@ -361,3 +361,9 @@ a.text-hospital-red:hover {
     font-size: 0.5rem;
     padding: 0.25em 0.4em;
 }
+
+.bg-custom-success { background-color: #28a745; }
+.bg-custom-low { background-color: #a3c62d; }
+.bg-custom-warning { background-color: #ffc107; }
+.bg-custom-alert { background-color: #fd7e14; }
+.bg-custom-danger { background-color: #dc3545; }
