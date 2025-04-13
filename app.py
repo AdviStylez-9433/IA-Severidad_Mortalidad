@@ -8,11 +8,66 @@ import joblib
 import os
 
 app = Flask(__name__)
-CORS(app)
+
+CORS(app, resources={
+    r"/predict": {
+        "origins": ["https://medpredict-pro.onrender.com", "http://localhost:*"],
+        "methods": ["POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 MODEL_PATH = 'mortality_model.pkl'
 
-# Servir archivos HTML principales
+from flask import Flask, request, jsonify, send_from_directory, render_template_string
+from flask_cors import CORS
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+import os
+from datetime import datetime, timedelta
+import json
+
+# Configuración inicial de la aplicación
+app = Flask(__name__, static_folder='.', static_url_path='')
+
+# Configuración CORS detallada
+CORS(app, resources={
+    r"/*": {
+        "origins": ["https://medpredict-pro.onrender.com"],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
+
+# Configuración existente del modelo
+MODEL_PATH = 'mortality_model.pkl'
+HISTORY_DB = 'evaluations.json'
+
+# ... (Mantén aquí todas tus funciones existentes como generate_realistic_medical_data, etc.) ...
+
+# Endpoint de predicción con CORS explícito
+@app.route('/predict', methods=['POST', 'OPTIONS'])
+def predict():
+    if request.method == 'OPTIONS':
+        # Respuesta preflight CORS
+        response = jsonify({'status': 'success'})
+        response.headers.add('Access-Control-Allow-Origin', 'https://medpredict-pro.onrender.com')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        return response
+    
+    try:
+        # ... (Mantén aquí tu lógica existente de predicción) ...
+        return jsonify({
+            'mortality_probability': 0.42,  # Ejemplo
+            'severity_level': 3,
+            'status': 'success'
+        })
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+# Rutas para archivos estáticos (con CORS implícito por la configuración global)
 @app.route("/")
 def serve_index():
     return render_template_string(get_html('index.html'))
@@ -24,7 +79,6 @@ def serve_html(page_name):
     except FileNotFoundError:
         return "Página no encontrada", 404
 
-# Servir archivos estáticos (JS, CSS, imágenes)
 @app.route("/<filename>.<ext>")
 def serve_static(filename, ext):
     allowed_extensions = ['js', 'css', 'png', 'jpg', 'jpeg', 'pdf']
@@ -36,7 +90,7 @@ def serve_static(filename, ext):
     except FileNotFoundError:
         return "Archivo no encontrado", 404
 
-# Servir archivos específicos con nombres complejos
+# Rutas específicas para archivos
 @app.route("/favicon-new.png")
 def serve_favicon():
     return send_from_directory('.', "favicon-new.png")
