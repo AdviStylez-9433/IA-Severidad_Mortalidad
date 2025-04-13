@@ -15,18 +15,18 @@ body {
 
 /* Color principal verde hospital */
 .bg-hospital-red {
-    background-color: #2e7d32 !important; /* Verde oscuro hospitalario */
+    background-color: #00487C !important; /* Verde oscuro hospitalario */
 }
 
 /* Botones */
 .btn-hospital-red {
-    background-color: #2e7d32;
+    background-color: #00487C;
     color: white;
     border: none;
 }
 
 .btn-hospital-red:hover {
-    background-color: #1b5e20;
+    background-color: #0062A3;
     color: white;
 }
 
@@ -45,7 +45,7 @@ body {
 
 .nav-link.active {
     font-weight: 600;
-    border-bottom: 3px solid #81c784;
+    border-bottom: 3px solid #90D2EB;
 }
 
 /* Cajas de filtros */
@@ -58,7 +58,7 @@ body {
 }
 
 .filter-box h5 {
-    color: #2e7d32;
+    color: #0062A3;
     font-weight: 600;
 }
 
@@ -80,7 +80,7 @@ body {
 
 /* Elementos de lista de historial */
 .evaluation-item {
-    border-left: 4px solid #81c784;
+    border-left: 4px solid #90D2EB;
     transition: all 0.2s ease;
 }
 
@@ -132,12 +132,12 @@ footer {
 
 /* Paginación */
 .page-item.active .page-link {
-    background-color: #2e7d32;
-    border-color: #2e7d32;
+    background-color: #00487C;
+    border-color: #00487C;
 }
 
 .page-link {
-    color: #2e7d32;
+    color: #00487C;
 }
 
 /* Iconos */
@@ -147,7 +147,7 @@ footer {
 
 /* Spinner */
 .spinner-border.text-hospital-red {
-    color: #2e7d32 !important;
+    color: #00487C !important;
 }
 
 /* Responsive */
@@ -174,15 +174,15 @@ footer {
 
 /* Badges */
 .badge-hospital {
-    background-color: #a5d6a7;
-    color: #1b5e20;
+    background-color: #90D2EB;
+    color: #00487C;
     font-weight: 500;
 }
 
 /* Formularios */
 .form-control:focus, .form-select:focus {
-    border-color: #81c784;
-    box-shadow: 0 0 0 0.25rem rgba(46, 125, 50, 0.25);
+    border-color: #90D2EB;
+    box-shadow: 0 0 0 0.25rem #bbeafc;
 }
 
 /* Tablas */
@@ -230,13 +230,13 @@ footer {
 
 /* Botón PDF */
 .btn-outline-hospital-red {
-    color: #2e7d32;
-    border-color: #2e7d32;
+    color: #00487C;
+    border-color: #00487C;
 }
 
 .btn-outline-hospital-red:hover {
     color: white;
-    background-color: #2e7d32;
+    background-color: #0062A3;
 }
 
 /* Estilo para el botón de limpiar */
@@ -289,7 +289,7 @@ footer {
 
 /* Efecto hover para los enlaces */
 a.text-hospital-red:hover {
-    color: #1b5e20 !important;
+    color: #0062A3 !important;
     text-decoration: underline;
 }
 
@@ -311,11 +311,11 @@ a.text-hospital-red:hover {
 
 /* Estilo para el botón de mostrar contraseña */
 #togglePassword {
-    border-color: #ced4da;
+    border-color: #90D2EB;
 }
 
 #togglePassword:hover {
-    background-color: #f1f8e9;
+    background-color: #90D2EB;
 }
 
 /* Responsive adjustments */
@@ -332,7 +332,7 @@ a.text-hospital-red:hover {
 /* Estilos para tarjetas de predictores */
 .predictor-card {
     transition: all 0.3s ease;
-    border-left: 4px solid #2e7d32;
+    border-left: 4px solid #0062A3;
 }
 
 .predictor-card:hover {
@@ -353,5 +353,5 @@ a.text-hospital-red:hover {
 /* Tooltips para parámetros */
 .param-tooltip {
     cursor: help;
-    border-bottom: 1px dotted #2e7d32;
+    border-bottom: 1px dotted #00487C;
 }
