@@ -356,6 +356,18 @@ a.text-hospital-red:hover {
     border-bottom: 1px dotted #00487C;
 }
 
+.parameter-card {
+    border-left: 3px solid #00487C; /* Cambiado a azul */
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.param-help {
+    cursor: help;
+    color: #0d6efd; /* Cambiado a azul */
+    border-bottom: 1px dashed #00487C; /* Cambiado a azul */
+}
+
 .navbar-brand .badge {
     transform: translate(-10%) !important;  /* Ajusta estos valores */
     font-size: 0.5rem;
