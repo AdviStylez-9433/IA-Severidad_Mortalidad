@@ -243,65 +243,32 @@ from datetime import datetime
 
 @app.route('/health-check')
 def health_check():
-    """Endpoint de estado avanzado con métricas del sistema"""
-    # Tiempo de inicio (para calcular uptime)
+    """Endpoint de estado simplificado"""
     start_time = time.time()
     
-    # Datos detallados del sistema
+    # Obtener datos básicos del sistema
+    current_time = datetime.utcnow()
+    uptime_seconds = round(time.time() - start_time)
+    uptime_since = (current_time - timedelta(seconds=uptime_seconds)).strftime("%Y-%m-%d %H:%M UTC")
+    
     status_data = {
-        "metadata": {
-            "service": "MedPredict Pro",
-            "version": "1.0.2",
-            "environment": "production" if os.getenv('FLASK_ENV') == 'production' else "development",
-            "timestamp": datetime.utcnow().isoformat() + "Z",
-            "endpoint": "/health-check",
-            "documentation": "https://medpredictpro.com/docs/api#health-check"
-        },
-        "status": {
-            "overall": "active",
-            "code": 200,
-            "description": "Service operating within normal parameters"
-        },
-        "resources": {
-            "cpu_usage": f"{psutil.cpu_percent()}%",
-            "memory_usage": f"{psutil.virtual_memory().percent}%",
-            "disk_usage": f"{psutil.disk_usage('/').percent}%",
-            "process_uptime": f"{round(time.time() - start_time)} seconds",
-            "active_threads": os.sys.getsizeof(os.sys._current_frames())
-        },
+        "service": "MedPredict Pro",
+        "status": "active",
+        "timestamp": current_time.isoformat() + "Z",
+        "version": "1.0.0",
         "components": {
-            "database": {
-                "status": "online",
-                "type": "SQLite" if os.path.exists('instance/database.db') else "None",
-                "size": f"{round(os.path.getsize('instance/database.db')/1024, 2)} KB" if os.path.exists('instance/database.db') else "0 KB"
-            },
-            "ml_model": {
-                "status": "loaded",
-                "name": "mortality_model.pkl",
-                "last_trained": datetime.fromtimestamp(os.path.getmtime('mortality_model.pkl')).isoformat() if os.path.exists('mortality_model.pkl') else "N/A",
-                "size": f"{round(os.path.getsize('mortality_model.pkl')/1024, 2)} KB" if os.path.exists('mortality_model.pkl') else "0 KB"
-            },
-            "api": {
-                "status": "operational",
-                "requests_processed": "N/A",  # Puedes conectar un contador real aquí
-                "average_response_time": "50ms"
-            }
+            "database": "online",
+            "ml_model": "loaded",
+            "api": "operational"
         },
-        "dependencies": {
-            "flask": "2.3.2",
-            "python": "3.9.0",
-            "system": os.uname().sysname if hasattr(os, 'uname') else "Windows"
-        },
-        "links": {
-            "self": request.url,
-            "metrics": request.url_root + "metrics",
-            "documentation": "https://medpredictpro.com/docs"
-        }
+        "uptime": f"{uptime_seconds} since {uptime_since}",
+        "response_time": "50ms"
     }
 
-    # Crear respuesta con formato bonito
+    # Crear respuesta con indentación
     response = jsonify(status_data)
-    response.headers.add('X-Health-Check', 'detailed')
-    response.headers.add('Cache-Control', 'no-cache')
+    response.headers['Content-Type'] = 'application/json; charset=utf-8'
     
     return response
+
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
