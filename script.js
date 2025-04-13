@@ -331,27 +331,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Espera a que todo el DOM esté cargado
-document.addEventListener('DOMContentLoaded', function() {
-    // Configuración inicial
-    const requiredElements = {
-        clearFormBtn: document.getElementById('clearFormBtn'),
-        predictionForm: document.getElementById('predictionForm'),
-        resultsDiv: document.getElementById('results'),
-    };
-    
-    // Verifica que todos los elementos existan
-    if(Object.values(requiredElements).every(el => el !== null)) {
-        initializeApp(requiredElements);
-    } else {
-        console.error('Faltan elementos requeridos en el DOM:', 
-            Object.entries(requiredElements)
-                .filter(([_, el]) => el === null)
-                .map(([name, _]) => name)
-        );
-    }
-});
-
 function initializeApp(elements) {
     // Configurar el botón de limpiar
     elements.clearFormBtn.addEventListener('click', function() {
