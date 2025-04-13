@@ -355,3 +355,9 @@ a.text-hospital-red:hover {
     cursor: help;
     border-bottom: 1px dotted #00487C;
 }
+
+.navbar-brand .badge {
+    transform: translate(-10%) !important;  /* Ajusta estos valores */
+    font-size: 0.5rem;
+    padding: 0.25em 0.4em;
+}
