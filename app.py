@@ -3,27 +3,6 @@ from flask_cors import CORS
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
-import joblib
-import os
-
-app = Flask(__name__)
-
-CORS(app, resources={
-    r"/predict": {
-        "origins": ["https://medpredict-pro.onrender.com", "http://localhost:*"],
-        "methods": ["POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
-    }
-})
-
-MODEL_PATH = 'mortality_model.pkl'
-
-from flask import Flask, request, jsonify, send_from_directory, render_template_string
-from flask_cors import CORS
-import pandas as pd
-import numpy as np
-from sklearn.ensemble import RandomForestClassifier
 import joblib
 import os
 from datetime import datetime, timedelta
