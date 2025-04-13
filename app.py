@@ -14,7 +14,7 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 # Configuración CORS detallada
 CORS(app, resources={
     r"/*": {
-        "origins": ["https://medpredict-pro.onrender.com"],
+        "origins": ["https://medpredict-api.onrender.com"],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type"]
     }
@@ -107,7 +107,7 @@ def save_evaluation(evaluation):
 def predict():
     if request.method == 'OPTIONS':
         response = jsonify({'status': 'success'})
-        response.headers.add('Access-Control-Allow-Origin', 'https://medpredict-pro.onrender.com')
+        response.headers.add('Access-Control-Allow-Origin', 'https://medpredict-api.onrender.com')
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
         return response
     
