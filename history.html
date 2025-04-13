@@ -315,57 +315,225 @@
         </div>
     </footer>
 
-    <!--
     <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-hospital-red text-white">
-                    <h5 class="modal-title">Detalles de Evaluación</h5>
+                    <h5 class="modal-title">Detalles Completo de Evaluación</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="detailModalContent">
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold"><i class="bi bi-person-badge me-2"></i>Información del Paciente</h6>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">Nombre:</span>
+                                    <span id="detail-name">Juan Pérez López</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">Edad:</span>
+                                    <span id="detail-age">45 años</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">Género:</span>
+                                    <span id="detail-gender">Masculino</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">ID Paciente:</span>
+                                    <span id="detail-id">MP-2024-0045</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold"><i class="bi bi-calendar-event me-2"></i>Información de Evaluación</h6>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">Fecha:</span>
+                                    <span id="detail-date">15/03/2024 09:30</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">Evaluador:</span>
+                                    <span id="detail-doctor">Dr. Carlos Méndez</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">Modelo usado:</span>
+                                    <span id="detail-model">XGBoost v2.3</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">ID Evaluación:</span>
+                                    <span id="detail-eval-id">EV-2024-0158</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 fw-bold"><i class="bi bi-clipboard2-pulse me-2"></i>Score de
+                                        Severidad</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h3 class="mb-0" id="detail-severity-score">3/5</h3>
+                                            <span class="badge bg-warning text-dark"
+                                                id="detail-severity-label">Moderada</span>
+                                        </div>
+                                        <div class="text-end">
+                                            <small class="text-muted">Puntuación</small>
+                                            <div class="progress mt-2" style="height: 10px; width: 150px;">
+                                                <div class="progress-bar bg-warning" role="progressbar"
+                                                    style="width: 60%" aria-valuenow="60" aria-valuemin="0"
+                                                    aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group list-group-flush small">
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Presión arterial:</span>
+                                            <span class="fw-bold">140/90 mmHg</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Frecuencia cardíaca:</span>
+                                            <span class="fw-bold">98 lpm</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Saturación O₂:</span>
+                                            <span class="fw-bold">92%</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 fw-bold"><i class="bi bi-activity me-2"></i>Riesgo de Mortalidad
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h3 class="mb-0" id="detail-risk-score">78%</h3>
+                                            <span class="badge bg-danger" id="detail-risk-label">Alto riesgo</span>
+                                        </div>
+                                        <div class="text-end">
+                                            <small class="text-muted">Probabilidad</small>
+                                            <div class="progress mt-2" style="height: 10px; width: 150px;">
+                                                <div class="progress-bar bg-danger" role="progressbar"
+                                                    style="width: 78%" aria-valuenow="78" aria-valuemin="0"
+                                                    aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group list-group-flush small">
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Factores de riesgo:</span>
+                                            <span class="fw-bold">3/5</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Comorbilidades:</span>
+                                            <span class="fw-bold">Diabetes, Hipertensión</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Recomendación:</span>
+                                            <span class="fw-bold text-danger">Ingreso recomendado</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0 fw-bold"><i class="bi bi-clipboard2-data me-2"></i>Variables Clínicas</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Variable</th>
+                                            <th>Valor</th>
+                                            <th>Rango Normal</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Temperatura</td>
+                                            <td>37.8 °C</td>
+                                            <td>36.5 - 37.2 °C</td>
+                                            <td><span class="badge bg-warning text-dark">Elevada</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Leucocitos</td>
+                                            <td>12,500 /μL</td>
+                                            <td>4,000 - 11,000 /μL</td>
+                                            <td><span class="badge bg-danger">Alto</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Creatinina</td>
+                                            <td>1.2 mg/dL</td>
+                                            <td>0.6 - 1.1 mg/dL</td>
+                                            <td><span class="badge bg-warning text-dark">Elevado</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Plaquetas</td>
+                                            <td>185,000 /μL</td>
+                                            <td>150,000 - 450,000 /μL</td>
+                                            <td><span class="badge bg-success">Normal</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0 fw-bold"><i class="bi bi-chat-square-text me-2"></i>Notas y Recomendaciones
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <strong>Nota clínica:</strong> Paciente presenta fiebre persistente y leucocitosis. Se
+                                recomienda evaluación para posible infección bacteriana y consideración de
+                                antibioticoterapia.
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                <strong>Recomendaciones:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Monitorización continua de signos vitales</li>
+                                    <li>Hemograma de control en 24 horas</li>
+                                    <li>Evaluación por infectología</li>
+                                    <li>Considerar tomografía abdominal si persiste fiebre</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-hospital-red" id="generatePdfFromHistory">
-                        <i class="bi bi-file-earmark-pdf me-2"></i>Generar PDF
+                    <button type="button" class="btn btn-hospital-red">
+                        <i class="bi bi-printer me-2"></i>Imprimir
+                    </button>
+                    <button type="button" class="btn btn-hospital-blue">
+                        <i class="bi bi-file-earmark-pdf me-2"></i>Exportar PDF
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <div class="modal fade" id="maintenanceModal" tabindex="-1" aria-hidden="false" data-bs-backdrop="static"
-        data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title"><i class="bi bi-tools me-2"></i>Sección en Mantenimiento</h5>
-                </div>
-                <div class="modal-body text-center">
-                    <div class="mb-4">
-                        <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
-                    </div>
-                    <h4 class="mb-3">¡Estamos trabajando para mejorar tu experiencia!</h4>
-                    <p class="mb-4">La sección de histórico de evaluaciones no está disponible temporalmente debido a
-                        trabajos de mantenimiento.</p>
-                    <div class="alert alert-warning">
-                        <i class="bi bi-clock-history me-2"></i>
-                        Estimamos que el servicio estará disponible nuevamente en 2 horas.
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-hospital-red" data-bs-dismiss="modal">
-                        <i class="bi bi-arrow-left me-2"></i>Entendido
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    -->
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>

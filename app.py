@@ -234,3 +234,12 @@ def serve_csv():
 # Configuración para producción
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
+
+@app.route('/health-check')
+def health_check():
+    """Endpoint para UptimeRobot"""
+    return jsonify({
+        "status": "active",
+        "service": "MedPredict Pro",
+        "version": "1.0"
+    }), 200
