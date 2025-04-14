@@ -8,6 +8,7 @@ import os
 from datetime import datetime, timedelta
 import json
 import time
+from colorama import init, Fore, Back, Style
 
 # Configuración inicial de la aplicación
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -235,60 +236,50 @@ def serve_csv():
 # Configuración para producción
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
-
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+    
+# Inicializar colorama
+init(autoreset=True)
 
 def get_status_data():
-    """Function to get status data shared by both endpoints"""
+    """Obtiene los datos de estado"""
     start_time = time.time()
     current_time = datetime.utcnow()
     uptime_seconds = round(time.time() - start_time)
-    uptime_since = (current_time - timedelta(seconds=uptime_seconds)).strftime("%Y-%m-%d %H:%M UTC")
     
     return {
         "service": "MedPredict Pro",
         "status": "active",
-        "timestamp": current_time.isoformat() + "Z",
+        "timestamp": current_time.strftime("%Y-%m-%d %H:%M:%S UTC"),
         "version": "1.0.0",
         "components": {
-            "database": {
-                "status": "online",
-                "response_time": "12ms"
-            },
-            "ml_model": {
-                "status": "loaded",
-                "version": "2.1.3"
-            },
-            "api": {
-                "status": "operational",
-                "requests": "1,245"
-            },
-            "cache": {
-                "status": "active",
-                "hit_rate": "89%"
-            }
+            "database": "online",
+            "ml_model": "loaded",
+            "api": "operational"
         },
-        "uptime": f"{uptime_seconds} seconds since {uptime_since}",
+        "uptime": f"{uptime_seconds} seconds",
         "response_time": "50ms",
         "environment": "production"
     }
 
 @app.route('/status')
-def status_ui():
-    """Main status endpoint with HTML interface"""
-    status_data = get_status_data()
-    return render_template('status.html', status=status_data)
-
-@app.route('/status.json')
-def status_json():
-    """Status endpoint in JSON format"""
-    status_data = get_status_data()
-    response = jsonify(status_data)
-    response.headers['Content-Type'] = 'application/json; charset=utf-8'
-    return response
-
-# Backward compatibility
-@app.route('/health-check')
-def health_check():
-    """Legacy health check endpoint (JSON)"""
-    return status_json()
+def status_cmd():
+    """Endpoint de estado en formato CMD con colores"""
+    status = get_status_data()
+    
+    # Construir respuesta con colores
+    output = []
+    output.append(Fore.CYAN + "=== SYSTEM STATUS ===" + Style.RESET_ALL)
+    output.append(f"{Fore.YELLOW}Service:{Style.RESET_ALL} {status['service']}")
+    output.append(f"{Fore.YELLOW}Status:{Style.RESET_ALL} {Fore.GREEN if status['status'] == 'active' else Fore.RED}{status['status'].upper()}{Style.RESET_ALL}")
+    output.append(f"{Fore.YELLOW}Version:{Style.RESET_ALL} {status['version']}")
+    output.append(f"{Fore.YELLOW}Environment:{Style.RESET_ALL} {status['environment'].upper()}")
+    output.append(f"{Fore.YELLOW}Uptime:{Style.RESET_ALL} {status['uptime']}")
+    output.append(f"{Fore.YELLOW}Response Time:{Style.RESET_ALL} {status['response_time']}")
+    output.append(f"{Fore.YELLOW}Last Check:{Style.RESET_ALL} {status['timestamp']}")
+    
+    output.append("\n" + Fore.CYAN + "=== COMPONENTS ===" + Style.RESET_ALL)
+    for component, state in status['components'].items():
+        color = Fore.GREEN if state in ['online', 'loaded', 'operational'] else Fore.RED
+        output.append(f"{Fore.YELLOW}{component.title():<10}:{Style.RESET_ALL} {color}{state.upper()}{Style.RESET_ALL}")
+    
+    return "<pre>" + "\n".join(output) + "</pre>"
