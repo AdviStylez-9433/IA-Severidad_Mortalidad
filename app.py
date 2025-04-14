@@ -244,8 +244,11 @@ def get_status_data():
     
     return {
         "service": "MedPredict Pro",
+        "description": "Medical Predictions Service",  # Añadido
         "status": "active",
         "timestamp": current_time.strftime("%Y-%m-%d %H:%M:%S UTC"),
+        "config_file": "/etc/systemd/system/medpredict.service",  # Añadido
+        "enabled": "enabled",  # Añadido
         "version": "1.0.0",
         "components": {
             "database": "online",
@@ -254,7 +257,14 @@ def get_status_data():
         },
         "uptime": f"{uptime_seconds} seconds",
         "response_time": "50ms",
-        "environment": "production"
+        "environment": "production",
+        "pid": 12345,  # Añadido
+        "process_name": "medpredict",  # Añadido
+        "threads": 4,  # Añadido
+        "thread_limit": 100,  # Añadido
+        "memory_usage": "45.2MB",  # Añadido
+        "hostname": "medpredict-server",  # Añadido
+        "last_event": "Service initialized successfully"  # Añadido
     }
 
 @app.route('/status')
@@ -284,6 +294,7 @@ def status_cmd():
         output.append(f"             ├─ {component} ({state})")
     
     # Línea de log simulada
-    output.append(f"\n{status['timestamp'][5:16]} {status['hostname']} systemd[1]: {status['last_event']}")
+    log_timestamp = datetime.strptime(status['timestamp'], "%Y-%m-%d %H:%M:%S UTC").strftime("%b %d %H:%M:%S")
+    output.append(f"\n{log_timestamp} {status['hostname']} systemd[1]: {status['last_event']}")
     
     return "<pre>" + "\n".join(output) + "</pre>"
