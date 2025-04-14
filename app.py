@@ -285,7 +285,7 @@ def status_cmd():
     output.append(f"     Active: {status['status']} (running) since {status['timestamp']}; {status['uptime']} ago")
     output.append(f"   Main PID: {status['pid']} ({status['process_name']})")
     output.append(f"      Tasks: {status['threads']} (limit: {status['thread_limit']})")
-    output.append(f"      Memory: {status['memory_usage']}")
+    output.append(f"     Memory: {status['memory_usage']}")
     output.append(f"      Components:")
     
     for component, state in status['components'].items():
