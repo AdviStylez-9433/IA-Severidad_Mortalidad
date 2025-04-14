@@ -8,7 +8,7 @@ import os
 from datetime import datetime, timedelta
 import json
 import time
-from colorama import init, Fore, Back, Style
+from colorama import Fore, Style
 
 # Configuración inicial de la aplicación
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -236,9 +236,6 @@ def serve_csv():
 # Configuración para producción
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
-    
-# Inicializar colorama
-init(autoreset=True)
 
 def get_status_data():
     """Obtiene los datos de estado"""
@@ -263,23 +260,40 @@ def get_status_data():
 
 @app.route('/status')
 def status_cmd():
-    """Endpoint de estado en formato CMD con colores"""
+    """Endpoint de estado en formato Linux systemd"""
     status = get_status_data()
     
-    # Construir respuesta con colores
+    # Construir respuesta con formato systemctl
     output = []
-    output.append(Fore.CYAN + "=== SYSTEM STATUS ===" + Style.RESET_ALL)
-    output.append(f"{Fore.YELLOW}Service:{Style.RESET_ALL} {status['service']}")
-    output.append(f"{Fore.YELLOW}Status:{Style.RESET_ALL} {Fore.GREEN if status['status'] == 'active' else Fore.RED}{status['status'].upper()}{Style.RESET_ALL}")
-    output.append(f"{Fore.YELLOW}Version:{Style.RESET_ALL} {status['version']}")
-    output.append(f"{Fore.YELLOW}Environment:{Style.RESET_ALL} {status['environment'].upper()}")
-    output.append(f"{Fore.YELLOW}Uptime:{Style.RESET_ALL} {status['uptime']}")
-    output.append(f"{Fore.YELLOW}Response Time:{Style.RESET_ALL} {status['response_time']}")
-    output.append(f"{Fore.YELLOW}Last Check:{Style.RESET_ALL} {status['timestamp']}")
     
-    output.append("\n" + Fore.CYAN + "=== COMPONENTS ===" + Style.RESET_ALL)
+    # Encabezado estilo systemd (● símbolo de estado)
+    status_symbol = "●" if status['status'] == 'active' else "○"
+    service_line = f"{Fore.BLUE}{status_symbol} {status['service']}.service - {status['description']}{Style.RESET_ALL}"
+    output.append(service_line)
+    
+    # Línea Loaded (estilo systemctl)
+    loaded_line = f"     {Fore.YELLOW}Loaded:{Style.RESET_ALL} loaded ({status['config_file']}; {status['enabled']}; vendor preset: enabled)"
+    output.append(loaded_line)
+    
+    # Línea Active (con color según estado)
+    active_color = Fore.GREEN if status['status'] == 'active' else Fore.RED
+    active_line = f"     {Fore.YELLOW}Active:{Style.RESET_ALL} {active_color}{status['status']} (running){Style.RESET_ALL} since {status['timestamp']}; {status['uptime']} ago"
+    output.append(active_line)
+    
+    # Línea Docs si está disponible
+    if status.get('docs'):
+        output.append(f"       {Fore.YELLOW}Docs:{Style.RESET_ALL} {status['docs']}")
+    
+    # Proceso principal (Main PID)
+    output.append(f"   {Fore.YELLOW}Main PID:{Style.RESET_ALL} {status['pid']} ({status['process_name']})")
+    
+    # Componentes (estilo CGroup de systemd)
+    output.append(f"      {Fore.YELLOW}Components:{Style.RESET_ALL}")
     for component, state in status['components'].items():
-        color = Fore.GREEN if state in ['online', 'loaded', 'operational'] else Fore.RED
-        output.append(f"{Fore.YELLOW}{component.title():<10}:{Style.RESET_ALL} {color}{state.upper()}{Style.RESET_ALL}")
+        state_color = Fore.GREEN if state == 'online' else Fore.RED
+        output.append(f"             ├─ {component} ({state_color}{state}{Style.RESET_ALL})")
+    
+    # Logs recientes (último evento)
+    output.append(f"\n{Fore.CYAN}Oct {status['timestamp'][5:16]} {status['hostname']} systemd[1]: {status['last_event']}{Style.RESET_ALL}")
     
     return "<pre>" + "\n".join(output) + "</pre>"
