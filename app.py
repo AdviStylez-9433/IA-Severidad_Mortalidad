@@ -5,10 +5,9 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 import joblib
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
 import time
-from colorama import Fore, Style
 
 # Configuración inicial de la aplicación
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -260,40 +259,31 @@ def get_status_data():
 
 @app.route('/status')
 def status_cmd():
-    """Endpoint de estado en formato Linux systemd"""
+    """Endpoint de estado en formato Linux systemd (sin colores)"""
     status = get_status_data()
     
-    # Construir respuesta con formato systemctl
     output = []
     
-    # Encabezado estilo systemd (● símbolo de estado)
+    # Encabezado estilo systemd
     status_symbol = "●" if status['status'] == 'active' else "○"
-    service_line = f"{Fore.BLUE}{status_symbol} {status['service']}.service - {status['description']}{Style.RESET_ALL}"
-    output.append(service_line)
+    output.append(f"{status_symbol} {status['service']}.service - {status['description']}")
     
-    # Línea Loaded (estilo systemctl)
-    loaded_line = f"     {Fore.YELLOW}Loaded:{Style.RESET_ALL} loaded ({status['config_file']}; {status['enabled']}; vendor preset: enabled)"
-    output.append(loaded_line)
+    # Líneas de estado
+    output.append(f"     Loaded: loaded ({status['config_file']}; {status['enabled']}; vendor preset: enabled)")
+    output.append(f"     Active: {status['status']} (running) since {status['timestamp']}; {status['uptime']} ago")
     
-    # Línea Active (con color según estado)
-    active_color = Fore.GREEN if status['status'] == 'active' else Fore.RED
-    active_line = f"     {Fore.YELLOW}Active:{Style.RESET_ALL} {active_color}{status['status']} (running){Style.RESET_ALL} since {status['timestamp']}; {status['uptime']} ago"
-    output.append(active_line)
-    
-    # Línea Docs si está disponible
     if status.get('docs'):
-        output.append(f"       {Fore.YELLOW}Docs:{Style.RESET_ALL} {status['docs']}")
+        output.append(f"       Docs: {status['docs']}")
     
-    # Proceso principal (Main PID)
-    output.append(f"   {Fore.YELLOW}Main PID:{Style.RESET_ALL} {status['pid']} ({status['process_name']})")
+    output.append(f"   Main PID: {status['pid']} ({status['process_name']})")
+    output.append(f"      Tasks: {status['threads']} (limit: {status['thread_limit']})")
+    output.append(f"     Memory: {status['memory_usage']}")
+    output.append(f"      Components:")
     
-    # Componentes (estilo CGroup de systemd)
-    output.append(f"      {Fore.YELLOW}Components:{Style.RESET_ALL}")
     for component, state in status['components'].items():
-        state_color = Fore.GREEN if state == 'online' else Fore.RED
-        output.append(f"             ├─ {component} ({state_color}{state}{Style.RESET_ALL})")
+        output.append(f"             ├─ {component} ({state})")
     
-    # Logs recientes (último evento)
-    output.append(f"\n{Fore.CYAN}Oct {status['timestamp'][5:16]} {status['hostname']} systemd[1]: {status['last_event']}{Style.RESET_ALL}")
+    # Línea de log simulada
+    output.append(f"\n{status['timestamp'][5:16]} {status['hostname']} systemd[1]: {status['last_event']}")
     
     return "<pre>" + "\n".join(output) + "</pre>"
