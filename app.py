@@ -8,6 +8,7 @@ import os
 from datetime import datetime
 import json
 import time
+import pytz
 
 # Configuración inicial de la aplicación
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -237,18 +238,19 @@ if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
 
 def get_status_data():
-    """Obtiene los datos de estado"""
+    """Obtiene los datos de estado con hora de Santiago de Chile"""
     start_time = time.time()
-    current_time = datetime.utcnow()
+    santiago_tz = pytz.timezone('America/Santiago')
+    current_time = datetime.now(santiago_tz)
     uptime_seconds = round(time.time() - start_time)
     
     return {
         "service": "MedPredict Pro",
-        "description": "Medical Predictions Service",  # Añadido
+        "description": "Medical Predictions Service",
         "status": "active",
-        "timestamp": current_time.strftime("%Y-%m-%d %H:%M:%S UTC"),
-        "config_file": "/etc/systemd/system/medpredict.service",  # Añadido
-        "enabled": "enabled",  # Añadido
+        "timestamp": current_time.strftime("%Y-%m-%d %H:%M:%S %Z"),  # Ej: "2024-02-19 13:30:00 CLST"
+        "config_file": "/etc/systemd/system/medpredict.service",
+        "enabled": "enabled",
         "version": "1.0.0",
         "components": {
             "database": "online",
@@ -258,33 +260,29 @@ def get_status_data():
         "uptime": f"{uptime_seconds} seconds",
         "response_time": "50ms",
         "environment": "production",
-        "pid": 12345,  # Añadido
-        "process_name": "medpredict",  # Añadido
-        "threads": 4,  # Añadido
-        "thread_limit": 100,  # Añadido
-        "memory_usage": "45.2MB",  # Añadido
-        "hostname": "medpredict-server",  # Añadido
-        "last_event": "Service initialized successfully"  # Añadido
+        "pid": 12345,
+        "process_name": "medpredict",
+        "threads": 4,
+        "thread_limit": 100,
+        "memory_usage": "45.2MB",
+        "hostname": "medpredict-server",
+        "last_event": "Service initialized successfully"
     }
 
 @app.route('/status')
 def status_cmd():
-    """Endpoint de estado en formato Linux systemd (sin colores)"""
+    """Endpoint de estado con hora de Santiago"""
     status = get_status_data()
     
     output = []
     
-    # Encabezado estilo systemd
+    # Encabezado
     status_symbol = "●" if status['status'] == 'active' else "○"
     output.append(f"{status_symbol} {status['service']}.service - {status['description']}")
     
     # Líneas de estado
     output.append(f"     Loaded: loaded ({status['config_file']}; {status['enabled']}; vendor preset: enabled)")
     output.append(f"     Active: {status['status']} (running) since {status['timestamp']}; {status['uptime']} ago")
-    
-    if status.get('docs'):
-        output.append(f"       Docs: {status['docs']}")
-    
     output.append(f"   Main PID: {status['pid']} ({status['process_name']})")
     output.append(f"      Tasks: {status['threads']} (limit: {status['thread_limit']})")
     output.append(f"     Memory: {status['memory_usage']}")
@@ -293,8 +291,12 @@ def status_cmd():
     for component, state in status['components'].items():
         output.append(f"             ├─ {component} ({state})")
     
-    # Línea de log simulada
-    log_timestamp = datetime.strptime(status['timestamp'], "%Y-%m-%d %H:%M:%S UTC").strftime("%b %d %H:%M:%S")
+    # Formato de log (ej: "Feb 19 13:30:00")
+    log_timestamp = datetime.strptime(
+        status['timestamp'].split(' ')[0] + ' ' + status['timestamp'].split(' ')[1], 
+        "%Y-%m-%d %H:%M:%S"
+    ).strftime("%b %d %H:%M:%S")
+    
     output.append(f"\n{log_timestamp} {status['hostname']} systemd[1]: {status['last_event']}")
     
     return "<pre>" + "\n".join(output) + "</pre>"
