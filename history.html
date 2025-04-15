@@ -46,9 +46,69 @@
 </head>
 
 <body>
-    <!-- Navbar (sin cambios) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-hospital-red">
-        <!-- ... mismo navbar ... -->
+        <div class="container">
+            <a class="navbar-brand" href="predict.html">
+                <i class="bi bi-heart-pulse me-2"></i>
+                <span class="fw-bold">MedPredict</span> 
+                <span class="position-relative d-inline-block">
+                    Pro
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" 
+                          style="font-size: 0.5rem; padding: 0.25em 0.4em; margin-left: 0.2em;">
+                        Demo
+                        <span class="visually-hidden">versión de demostración</span>
+                    </span>
+                </span>
+                <span class="d-block text-white text-end" style="font-size: 0.75rem;">Predicción Médica Inteligente</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="predict.html"><i class="bi bi-speedometer2 me-1"></i> Evaluación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="history.html"><i class="bi bi-graph-up me-1"></i> Histórico</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-calculator-fill me-1"></i> Predictores
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="severidad.html">
+                                <i class="bi bi-clipboard2-pulse me-1"></i> Score de Severidad
+                            </a></li>
+                            <li><a class="dropdown-item" href="mortalidad.html">
+                                <i class="bi bi-activity me-1"></i> Riesgo de Mortalidad
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="custom.html">
+                                <i class="bi bi-sliders me-1"></i> Predictor Personalizado
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-cpu-fill me-1"></i> Modelos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="model.html">
+                                <i class="bi bi-speedometer2 me-1"></i> Rendimiento
+                            </a></li>
+                            <li><a class="dropdown-item" href="retraining.html">
+                                <i class="bi bi-arrow-repeat me-1"></i> Re-entrenamiento
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="bi bi-power me-1"></i> Cerrar Sesion</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
 
     <div class="container py-4">
