@@ -46,6 +46,24 @@
             font-size: 0.85rem;
             /* Footer más compacto */
         }
+
+        .text-hospital-red {
+            color: #D32F2F !important;
+            /* Rojo médico estándar */
+        }
+
+        /* Opcional: Para hacer el icono más grande y con efecto */
+        .hospital-logo .bi-heart-pulse-fill {
+            font-size: 3.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .hospital-logo:hover .bi-heart-pulse-fill {
+            transform: scale(1.1);
+            color: #B71C1C !important;
+            /* Rojo más oscuro al hacer hover */
+        }
     </style>
 </head>
 
@@ -54,9 +72,9 @@
         <!-- Logo y título -->
         <div class="text-center mt-5 mb-4 position-relative">
             <div class="hospital-logo mb-3">
-                <i class="bi bi-heart-pulse-fill text-hospital-red"></i>
+                <i class="bi bi-heart-pulse-fill text-hospital-red"></i> <!-- Icono ya en rojo -->
             </div>
-            <h1 class="text-hospital-red mb-1">MedPredict
+            <h1 class="text-hospital mb-1">MedPredict
                 <span class="position-relative">
                     Pro
                     <span
